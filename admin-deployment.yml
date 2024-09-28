@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: learnix-admin
+  labels:
+    app: learnix-admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: learnix-admin
+  template:
+    metadata:
+      labels:
+        app: learnix-admin
+    spec:
+      containers:
+        - name: learnix-admin
+          image: gcr.io/learnix-e-learning-436804/learnix-admin:latest
+          
+          env:
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-admin-env
+                  key: MONGO_URI
+            - name: MONGO_DATA
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-admin-env
+                  key: MONGO_DATA
+            - name: RabbitMQ_link
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-admin-env
+                  key: RabbitMQ_link
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: learnix-admin
+spec:
+  clusterIP: None
+  selector:
+    app: learnix-admin

@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: learnix-auth
+  labels:
+    app: learnix-auth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: learnix-auth
+  template:
+    metadata:
+      labels:
+        app: learnix-auth
+    spec:
+      containers:
+        - name: learnix-auth
+          image: gcr.io/learnix-e-learning-436804/learnix-auth:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: RabbitMQ_link
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-auth-env
+                  key: RabbitMQ_link
+            - name: ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-auth-env
+                  key: ACCESS_TOKEN
+            - name: REFRESH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-auth-env
+                  key: REFRESH_TOKEN
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: learnix-auth
+spec:
+  clusterIP: None
+  selector:
+    app: learnix-auth
+

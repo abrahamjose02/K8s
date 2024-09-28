@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: learnix-notification
+  labels:
+    app: learnix-notification
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: learnix-notification
+  template:
+    metadata:
+      labels:
+        app: learnix-notification
+    spec:
+      containers:
+        - name: learnix-notification
+          image: gcr.io/learnix-e-learning-436804/learnix-notification:latest
+          
+          env:
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-notification-env
+                  key: MONGO_URI
+            - name: MONGODB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-notification-env
+                  key: MONGODB_NAME
+            - name: SMTP_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-notification-env
+                  key: SMTP_HOST
+            - name: SMTP_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-notification-env
+                  key: SMTP_PORT
+            - name: SMTP_SERVICE
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-notification-env
+                  key: SMTP_SERVICE
+            - name: SMTP_MAIL
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-notification-env
+                  key: SMTP_MAIL
+            - name: SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-notification-env
+                  key: SMTP_PASSWORD
+            - name: RabbitMQ_link
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-notification-env
+                  key: RabbitMQ_link
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: learnix-notification
+spec:
+  clusterIP: None
+  selector:
+    app: learnix-notification
+

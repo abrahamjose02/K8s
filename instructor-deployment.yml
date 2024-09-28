@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: learnix-instructor
+  labels:
+    app: learnix-instructor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: learnix-instructor
+  template:
+    metadata:
+      labels:
+        app: learnix-instructor
+    spec:
+      containers:
+        - name: learnix-instructor
+          image: gcr.io/learnix-e-learning-436804/learnix-instructor:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-instructor-env
+                  key: MONGO_URI
+            - name: MONGO_DATA
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-instructor-env
+                  key: MONGO_DATA
+            - name: RabbitMQ_Link
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-instructor-env
+                  key: RabbitMQ_Link
+            - name: S3_BUCKET_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-instructor-env
+                  key: S3_BUCKET_REGION
+            - name: IAM_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-instructor-env
+                  key: IAM_ACCESS_KEY
+            - name: IAM_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-instructor-env
+                  key: IAM_SECRET
+            - name: S3_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-instructor-env
+                  key: S3_BUCKET_NAME
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: learnix-instructor
+spec:
+  clusterIP: None
+  selector:
+    app: learnix-instructor
+

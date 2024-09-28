@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: learnix-courses
+  labels:
+    app: learnix-courses
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: learnix-courses
+  template:
+    metadata:
+      labels:
+        app: learnix-courses
+    spec:
+      containers:
+        - name: learnix-courses
+          image: gcr.io/learnix-e-learning-436804/learnix-courses:latest
+          env:
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-courses-env
+                  key: MONGO_URI
+            - name: MONGO_DATA
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-courses-env
+                  key: MONGO_DATA
+            - name: RabbitMQ_link
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-courses-env
+                  key: RabbitMQ_link
+            - name: S3_BUCKET_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-courses-env
+                  key: S3_BUCKET_REGION
+            - name: IAM_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-courses-env
+                  key: IAM_ACCESS_KEY
+            - name: IAM_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-courses-env
+                  key: IAM_SECRET
+            - name: S3_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-courses-env
+                  key: S3_BUCKET_NAME
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: learnix-courses
+spec:
+  clusterIP: None
+  selector:
+    app: learnix-courses
+

@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: learnix-user
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: learnix-user
+  template:
+    metadata:
+      labels:
+        app: learnix-user
+    spec:
+      containers:
+      - name: learnix-user
+        image: gcr.io/learnix-e-learning-436804/learnix-user:latest
+        env:
+        - name: MONGO_URI
+          valueFrom:
+            secretKeyRef:
+              name: learnix-user-env  
+              key: MONGO_URI
+        - name: MONGO_DATA
+          valueFrom:
+            secretKeyRef:
+              name: learnix-user-env  
+              key: MONGO_DATA
+        - name: RabbitMQ_link
+          valueFrom:
+            secretKeyRef:
+              name: learnix-user-env  
+              key: RabbitMQ_link
+        - name: ACCESS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: learnix-user-env  
+              key: ACCESS_TOKEN
+        - name: REFRESH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: learnix-user-env  
+              key: REFRESH_TOKEN
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: learnix-user-env  
+              key: JWT_SECRET
+        - name: S3_BUCKET_REGION
+          valueFrom:
+            secretKeyRef:
+              name: learnix-user-env  
+              key: S3_BUCKET_REGION
+        - name: IAM_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: learnix-user-env  
+              key: IAM_ACCESS_KEY
+        - name: IAM_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: learnix-user-env 
+              key: IAM_SECRET
+        - name: S3_BUCKET_NAME
+          valueFrom:
+            secretKeyRef:
+              name: learnix-user-env  
+              key: S3_BUCKET_NAME
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: learnix-user
+spec:
+  clusterIP: None
+  selector:
+    app: learnix-user

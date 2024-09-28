@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: learnix-transcoder
+  labels:
+    app: learnix-transcoder
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: learnix-transcoder
+  template:
+    metadata:
+      labels:
+        app: learnix-transcoder
+    spec:
+      containers:
+        - name: learnix-transcoder
+          image: gcr.io/learnix-e-learning-436804/learnix-transcoder:latest
+          ports:
+            - containerPort: 8001
+          env:
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-transcoder-env
+                  key: MONGO_URI
+            - name: MONGODB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-transcoder-env
+                  key: MONGODB_NAME
+            - name: RabbitMQ_Link
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-transcoder-env
+                  key: RabbitMQ_Link
+            - name: S3_BUCKET_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-transcoder-env
+                  key: S3_BUCKET_REGION
+            - name: IAM_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-transcoder-env
+                  key: IAM_ACCESS_KEY
+            - name: IAM_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-transcoder-env
+                  key: IAM_SECRET
+            - name: GATEWAY_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-transcoder-env
+                  key: GATEWAY_PORT
+            - name: DEEPGRAM_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-transcoder-env
+                  key: DEEPGRAM_API_KEY
+            - name: CORS_ORIGIN
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-transcoder-env
+                  key: CORS_ORIGIN
+            - name: S3_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-transcoder-env
+                  key: S3_BUCKET_NAME
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: learnix-transcoder
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8001
+      targetPort: 8001
+      protocol: TCP
+  selector:
+    app: learnix-transcoder
+

@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: app-learnixelearn-shop-tls
+  namespace: default  # Change to the appropriate namespace if needed
+spec:
+  secretName: tls-secret  # This must match the secret name in your Ingress
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: app.learnixelearn.shop
+  dnsNames:
+    - app.learnixelearn.shop

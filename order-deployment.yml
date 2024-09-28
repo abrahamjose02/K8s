@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: learnix-order
+  labels:
+    app: learnix-order
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: learnix-order
+  template:
+    metadata:
+      labels:
+        app: learnix-order
+    spec:
+      containers:
+        - name: learnix-order
+          image: gcr.io/learnix-e-learning-436804/learnix-order:latest
+        
+          env:
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-order-env
+                  key: MONGO_URI
+            - name: MONGO_DATA
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-order-env
+                  key: MONGO_DATA
+            - name: RabbitMQ_Link
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-order-env
+                  key: RabbitMQ_Link
+            - name: STRIPE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-order-env
+                  key: STRIPE_SECRET_KEY
+            - name: STRIPE_PUBLISH_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: learnix-order-env
+                  key: STRIPE_PUBLISH_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: learnix-order
+spec:
+  clusterIP: None
+  selector:
+    app: learnix-order
+
