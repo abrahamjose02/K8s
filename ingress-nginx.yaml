@@ -28,3 +28,10 @@ spec:
                 name: api-gateway
                 port:
                   number: 8000
+          - path: /socket.io
+            pathType: Prefix
+            backend:
+              service:
+                name: api-gateway
+                port:
+                  number: 8000
